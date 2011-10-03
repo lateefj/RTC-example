@@ -1,0 +1,12 @@
+<html>
+    <body>
+        <div id="topics">
+            <h2>Topics</h2>
+            <ul id="topic_list">
+                {% for t in topics%}
+                <li><a href="/t/{{ t.name }}">{{ t.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,23 @@
+<html>
+    <body>
+        <div id="search">
+            <h2>{{ search.name }}</h2>
+            <p id="description">{{ search.description }}</p>
+            <div id="results">
+                <ul>
+                    {% for r in results %}
+                    <li>Chamber :{{ r['chamber'] }}<br>
+                        <em>Events:</em>
+                        <ul> 
+                            {% for e in r['events'] %}
+                            <li>{{ e }}</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+
+                    {% endfor %}
+                </ul>
+        </div>
+
+    </body>
+</html>

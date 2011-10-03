@@ -1,0 +1,13 @@
+<html>
+    <body>
+        <div id="topic">
+            <h2>{{ topic.name }}</h2>
+            <h3>Searches:</h3>
+            <ul id="topic_searches">
+                {% for s in searches%}
+                <li><a href="/s/{{ s._id }}">{{ s.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </body>
+</html>
