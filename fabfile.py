@@ -10,6 +10,8 @@ from fabric.decorators import runs_once, with_settings
 
 pyclt1 = 'pyclt1.hackingthought.com'
 pyclt2 = 'pyclt2.hackinghtought.com'
+pyclt1_priv = '10.179.186.235'
+pyclt2_priv = '10.179.186.182'
 
 FLASK_HOSTS = (pyclt1, pyclt2)
 NGINX_HOSTS = (pyclt1, pyclt2)
@@ -104,6 +106,11 @@ def http_software():
     packages = 'nginx'
     _install_packages(packages)
 
+def mongo_configure():
+    """
+    Add configuration to mongo server.
+    """
+    sudo('echo "replSet = pyclt" >> /etc/mongodb.conf')
 def mongo_software():
     """
     Installs the latest version of mongo database (2.0)
@@ -115,7 +122,8 @@ def mongo_software():
     sudo('apt-get update')
     packages = 'mongodb-10gen'
     _install_packages(packages)
-
+    mongo_configure()
+    sudo('service mongodb restart')
 
 def prepare():
     """
@@ -193,6 +201,15 @@ def config_nginx():
     if exists('/etc/nginx/sites-enabled/ertc.conf'):
         sudo('rm /etc/nginx/sites-enabled/ertc.conf')
     sudo('ln -s /etc/nginx/sites-available/ertc.conf /etc/nginx/sites-enabled')
+
+def init_mongo_replication():
+    """
+    One time initialize mongo server setup
+    """
+    c = 'cfg = {' +\
+            '{_id:"pyclt", members: [{_id:0, host:"%s"}, {_id:1, host:"%s"}]}};' % (pyclt1_priv, pyclt2_priv) +\
+            'rs.initiate(cfg);rs.status();db.getMongo().setSlaveOk();'
+    run('echo "%s" | mongo' % c)
 
 def restart_flask():
     """
