@@ -44,14 +44,32 @@ def virtual_env(command):
         run('cd %s' % env.directory + ' && ' + env.activate + ' && ' + command)
 
 
-def install_libraries():
+def _library_commands():
     """
     Install the libraries needed for the applicaiton
     (This should be run in development)
     """
+    commands = []
     libs = ('fabric', 'flask', 'mongokit')
     for l in libs:
-        virtual_env('pip install %s' % l)
+        commands.append('pip install %s' % l)
+
+    return commands
+
+def install_libs():
+    """
+    Installs the dependent libraries in the virtual enviornment 
+    on the server
+    """
+    for c in _library_commands():
+        virtual_env(c)
+
+def local_install_libs():
+    """
+    Installing libraries on developer machines
+    """
+    for c in _library_commands():
+        local(c)
 
 def config_supervisor():
     """
